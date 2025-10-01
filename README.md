@@ -26,6 +26,6 @@ Le issue vengono salvate in **localStorage**, quindi rimangono disponibili anche
 
 - **HTML5**  
 - **CSS3 (Tailwind CSS)**  
-- **JavaScript (vanilla)**  
+- **JavaScript**  
 - **localStorage** (persistenza dati)  
 
