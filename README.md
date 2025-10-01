@@ -1,13 +1,13 @@
-# 📝 DevTask Manager - Kanban Board
+# DevTask Manager - Kanban Board
 
 Applicazione web che permette di gestire le **issue** (ticket) tramite una **Kanban Board** composta da 4 colonne:  
-➡️ Backlog → In Progress → Review → Done  
+Backlog → In Progress → Review → Done  
 
 Le issue vengono salvate in **localStorage**, quindi rimangono disponibili anche al riavvio del browser.  
 
 ---
 
-## 🚀 Funzionalità
+## Funzionalità
 
 - Creazione issue tramite form dedicato  
   - Titolo  
@@ -22,15 +22,10 @@ Le issue vengono salvate in **localStorage**, quindi rimangono disponibili anche
 
 ---
 
-## 🛠️ Tecnologie utilizzate
+## Tecnologie utilizzate
 
 - **HTML5**  
 - **CSS3 (Tailwind CSS)**  
 - **JavaScript (vanilla)**  
 - **localStorage** (persistenza dati)  
 
----
-
-## 📂 Struttura progetto
-
-# Progetto_Kanban_Board
