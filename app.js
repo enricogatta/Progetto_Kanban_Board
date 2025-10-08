@@ -120,6 +120,88 @@ function DevTaskManager() {
                             />
                         </div>
                     </div>
+                    {/* Form Nuova Issue */}
+                    {showForm && (
+                        <form onSubmit={createIssue} className="mt-6 p-6 bg-blue-50 rounded-xl border-4 border-blue-200 shadow-inner transition-opacity duration-300">
+                            <h2 className="text-xl font-bold text-blue-800 mb-4">Dettagli Nuova Issue</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div className="col-span-1 md:col-span-2">
+                                    <label className="block text-sm font-medium text-blue-700 mb-1">
+                                        Titolo *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="title"
+                                        value={formData.title}
+                                        onChange={handleFormChange}
+                                        placeholder="Inserisci un titolo conciso"
+                                        className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                                        required
+                                    />
+                                </div>
+                                
+                                <div className="col-span-1 md:col-span-2">
+                                    <label className="block text-sm font-medium text-blue-700 mb-1">
+                                        Descrizione
+                                    </label>
+                                    <textarea
+                                        name="description"
+                                        value={formData.description}
+                                        onChange={handleFormChange}
+                                        placeholder="Descrivi l'issue nel dettaglio"
+                                        rows="3"
+                                        className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label className="block text-sm font-medium text-blue-700 mb-1">
+                                        Assegnatario
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="assignee"
+                                        value={formData.assignee}
+                                        onChange={handleFormChange}
+                                        placeholder="Nome assegnatario"
+                                        className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label className="block text-sm font-medium text-blue-700 mb-1">
+                                        Priorità
+                                    </label>
+                                    <select
+                                        name="priority"
+                                        value={formData.priority}
+                                        onChange={handleFormChange}
+                                        className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors bg-white"
+                                    >
+                                        {Object.keys(PRIORITIES).map(key => (
+                                            <option key={key} value={key}>{PRIORITIES[key].label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div className="flex gap-3 pt-2">
+                                <button
+                                    type="submit"
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl transition-all font-semibold shadow-lg hover:shadow-xl transform active:scale-[0.98]"
+                                >
+                                    Crea Issue
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowForm(false)}
+                                    className="bg-slate-300 hover:bg-slate-400 text-slate-800 px-5 py-2 rounded-xl transition-colors font-semibold shadow-md"
+                                >
+                                    Annulla
+                                </button>
+                            </div>
+                        </form>
+                    )}
                 </header>
             </div>
         </div>
