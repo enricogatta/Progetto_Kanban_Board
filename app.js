@@ -21,3 +21,42 @@ const COLUMNS = [
     { id: 'review', title: 'Review', next: 'done' },
     { id: 'done', title: 'Done', next: null }
 ];
+
+// Componente principale
+function DevTaskManager() {
+    const [issues, setIssues] = useState([]);
+    const [showForm, setShowForm] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        assignee: '',
+        priority: 'medium'
+    });
+
+    // Effect 1: Caricamento iniziale da localStorage
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                setIssues(JSON.parse(saved));
+            }
+        } catch (e) {
+            console.error('Errore nel caricamento dei dati da localStorage:', e);
+            setIssues([]); 
+        }
+    }, []);
+
+    // Effect 2: Salvataggio su localStorage ad ogni modifica delle issues
+    useEffect(() => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(issues));
+    }, [issues]);
+
+    return (
+        <div className="p-4 md:p-8">
+            <div className="max-w-7xl mx-auto">
+                <h1 className="text-3xl font-bold text-slate-900">DevTask Manager</h1>
+            </div>
+        </div>
+    );
+}
