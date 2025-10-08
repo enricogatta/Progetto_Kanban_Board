@@ -201,12 +201,60 @@ function DevTaskManager() {
                                 </button>
                             </div>
                         </form>
+                        
                     )}
                 </header>
             </div>
         </div>
     );
 }
+// Componente Card Kanban
+const KanbanCard = ({ issue, column, moveIssue, deleteIssue }) => (
+    <div
+      key={issue.id}
+      className="bg-white border border-slate-200 rounded-lg p-4 shadow-md hover:shadow-xl transition-all duration-200 cursor-grab active:cursor-grabbing"
+    >
+      <div className="flex items-start justify-between mb-2">
+        <h3 className="font-semibold text-slate-800 flex-1 pr-2 text-base">
+          {issue.title}
+        </h3>
+        <span className={px-2 py-1 rounded text-xs font-medium border uppercase whitespace-nowrap ${PRIORITIES[issue.priority].color}}>
+          {PRIORITIES[issue.priority].label}
+        </span>
+      </div>
+
+      {issue.description && (
+        <p className="text-sm text-slate-600 mb-3 line-clamp-3">
+          {issue.description}
+        </p>
+      )}
+
+      {issue.assignee && (
+        <div className="text-xs font-medium text-slate-500 mb-3 p-1 rounded-md bg-slate-100 max-w-fit border border-slate-200">
+          <span className="font-bold text-slate-700">Assegnatario:</span> {issue.assignee}
+        </div>
+      )}
+
+      <div className="flex gap-2 mt-4">
+        {column.next && (
+          <button
+            onClick={() => moveIssue(issue.id, issue.status)}
+            className="flex-1 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors shadow-blue-500/50 shadow-md hover:shadow-lg transform active:scale-[0.99]"
+          >
+            Sposta
+            <ArrowRightIcon className="w-4 h-4" />
+          </button>
+        )}
+        <button
+          onClick={() => deleteIssue(issue.id)}
+          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors shadow-red-500/50 shadow-md hover:shadow-lg transform active:scale-[0.99]"
+          title="Elimina Issue"
+        >
+          <Trash2Icon className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
 
 // Monta l'applicazione React
 const container = document.getElementById('root');
