@@ -60,3 +60,10 @@ function DevTaskManager() {
         </div>
     );
 }
+
+// Monta l'applicazione React
+const container = document.getElementById('root');
+if (container) {
+    const root = ReactDOM.createRoot(container);
+    root.render(<DevTaskManager />);
+}
