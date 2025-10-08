@@ -1,0 +1,23 @@
+const PlusIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>;
+const SearchIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>;
+const Trash2Icon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>;
+const ArrowRightIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>;
+
+const { useState, useEffect } = React;
+
+// Costanti Globali
+const STORAGE_KEY = 'devtask_issues';
+
+const PRIORITIES = {
+    critical: { label: 'Critica', color: 'bg-red-100 text-red-800 border-red-300' },
+    high: { label: 'Alta', color: 'bg-yellow-100 text-yellow-800 border-yellow-300' },
+    medium: { label: 'Media', color: 'bg-blue-100 text-blue-800 border-blue-300' },
+    low: { label: 'Bassa', color: 'bg-green-100 text-green-800 border-green-300' },
+};
+
+const COLUMNS = [
+    { id: 'backlog', title: 'Backlog', next: 'inProgress' },
+    { id: 'inProgress', title: 'In Progress', next: 'review' },
+    { id: 'review', title: 'Review', next: 'done' },
+    { id: 'done', title: 'Done', next: null }
+];
