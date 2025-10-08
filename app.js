@@ -61,6 +61,88 @@ function DevTaskManager() {
     );
 }
 
+
+// Componente principale
+function DevTaskManager() {
+    const [issues, setIssues] = useState([]);
+    const [showForm, setShowForm] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        assignee: '',
+        priority: 'medium'
+    });
+
+    // Effect 1: Caricamento iniziale da localStorage
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                setIssues(JSON.parse(saved));
+            }
+        } catch (e) {
+            console.error('Errore nel caricamento dei dati da localStorage:', e);
+            setIssues([]); 
+        }
+    }, []);
+
+    // Effect 2: Salvataggio su localStorage ad ogni modifica delle issues
+    useEffect(() => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(issues));
+    }, [issues]);
+
+    // Conta le issue totali per colonna
+    const getColumnCount = (columnId) => {
+        return issues.filter(issue => issue.status === columnId).length;
+    };
+
+    return (
+        <div className="p-4 md:p-8">
+            <div className="max-w-7xl mx-auto">
+                {/* Header */}
+                <header className="bg-white rounded-xl shadow-xl p-6 mb-6 border-b-4 border-blue-600">
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4">
+                        <h1 className="text-3xl font-extrabold text-slate-900 mb-4 md:mb-0">
+                            DevTask Manager
+                        </h1>
+                        
+                        <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            {COLUMNS.map(col => (
+                                <span key={col.id} className="text-slate-600">
+                                    <span className="font-bold text-slate-800">{col.title}:</span> 
+                                    <span className="ml-1 font-semibold text-blue-600">{getColumnCount(col.id)}</span>
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3">
+                        <button
+                            onClick={() => setShowForm(!showForm)}
+                            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition-all font-medium shadow-blue-500/50 shadow-md hover:shadow-xl transform hover:scale-[1.01] active:scale-[0.99] min-w-[150px]"
+                        >
+                            <PlusIcon className="w-5 h-5" />
+                            {showForm ? 'Nascondi Form' : 'Nuova Issue'}
+                        </button>
+                        
+                        <div className="flex-1 relative w-full">
+                            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                            <input
+                                type="text"
+                                placeholder="Cerca per titolo, descrizione o assegnatario..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-shadow"
+                            />
+                        </div>
+                    </div>
+                </header>
+            </div>
+        </div>
+    );
+}
+
 // Monta l'applicazione React
 const container = document.getElementById('root');
 if (container) {
