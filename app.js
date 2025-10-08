@@ -52,11 +52,34 @@ function DevTaskManager() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(issues));
     }, [issues]);
 
+    const handleFormChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    // Funzione per creare una nuova issue
+    const createIssue = (e) => {
+        e.preventDefault();
+        if (!formData.title.trim()) return;
+
+        const newIssue = {
+            id: Date.now().toString(),
+            ...formData,
+            status: 'backlog',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+
+        setIssues([...issues, newIssue]);
+        setFormData({ title: '', description: '', assignee: '', priority: 'medium' });
+        setShowForm(false);
+    };
+
     // Conta le issue totali per colonna
     const getColumnCount = (columnId) => {
         return issues.filter(issue => issue.status === columnId).length;
     };
-
+    
     return (
         <div className="p-4 md:p-8">
             <div className="max-w-7xl mx-auto">
