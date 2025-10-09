@@ -24,9 +24,11 @@ const COLUMNS = [
 ];
 
 // Componente Card Kanban
-const KanbanCard = ({ issue, column, moveIssue, deleteIssue }) => (
+const KanbanCard = ({ issue, column, moveIssue, deleteIssue, onDragStart }) => (
     <div
       key={issue.id}
+      draggable="true"
+      onDragStart={(e) => onDragStart(e, issue)}
       className="bg-white border border-slate-200 rounded-lg p-4 shadow-md hover:shadow-xl transition-all duration-200 cursor-grab active:cursor-grabbing"
     >
       <div className="flex items-start justify-between mb-2">
@@ -76,6 +78,7 @@ function DevTaskManager() {
     const [issues, setIssues] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [draggedIssue, setDraggedIssue] = useState(null);
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -151,6 +154,7 @@ function DevTaskManager() {
         // Aggiunge un effetto visivo alla card trascinata
         e.target.style.opacity = '0.5';
     };
+
     const handleDragEnd = (e) => {
         e.target.style.opacity = '1';
         setDraggedIssue(null);
@@ -158,8 +162,8 @@ function DevTaskManager() {
 
     const handleDragOver = (e) => {
         e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-    };
+        e.dataTransfer.dropEffect = 'move';
+    };
 
     const handleDrop = (e, targetColumnId) => {
         e.preventDefault();
@@ -339,7 +343,12 @@ function DevTaskManager() {
                     {COLUMNS.map(column => {
                         const columnIssues = getColumnIssues(column.id);
                         return (
-                            <div key={column.id} className="bg-slate-100 rounded-xl shadow-lg p-4 flex flex-col h-[70vh] md:h-[calc(100vh-200px)]">
+                            <div 
+                                key={column.id} 
+                                className="bg-slate-100 rounded-xl shadow-lg p-4 flex flex-col h-[70vh] md:h-[calc(100vh-200px)]"
+                                onDragOver={handleDragOver}
+                                onDrop={(e) => handleDrop(e, column.id)}
+                            >
                                 <div className="flex items-center justify-between mb-4 border-b pb-2 border-slate-300">
                                     <h2 className={`text-xl font-extrabold ${column.id === 'done' ? 'text-green-700' : 'text-slate-800'}`}>
                                         {column.title}
@@ -357,13 +366,18 @@ function DevTaskManager() {
                                         </div>
                                     ) : (
                                         columnIssues.map(issue => (
-                                            <KanbanCard 
+                                            <div 
                                                 key={issue.id}
-                                                issue={issue}
-                                                column={column}
-                                                moveIssue={moveIssue}
-                                                deleteIssue={deleteIssue}
-                                            />
+                                                onDragEnd={handleDragEnd}
+                                            >
+                                                <KanbanCard 
+                                                    issue={issue}
+                                                    column={column}
+                                                    moveIssue={moveIssue}
+                                                    deleteIssue={deleteIssue}
+                                                    onDragStart={handleDragStart}
+                                                />
+                                            </div>
                                         ))
                                     )}
                                 </div>
@@ -377,7 +391,6 @@ function DevTaskManager() {
 }
 
 // Monta l'applicazione React
-// Assicurati che l'elemento 'root' esista in index.html
 const container = document.getElementById('root');
 if (container) {
     const root = ReactDOM.createRoot(container);
