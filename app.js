@@ -1,3 +1,4 @@
+// Definizioni Semplici di Icone SVG
 const PlusIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>;
 const SearchIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>;
 const Trash2Icon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>;
@@ -19,8 +20,56 @@ const COLUMNS = [
     { id: 'backlog', title: 'Backlog', next: 'inProgress' },
     { id: 'inProgress', title: 'In Progress', next: 'review' },
     { id: 'review', title: 'Review', next: 'done' },
-    { id: 'done', title: 'Done', next: null }
+    { id: 'done', title: 'Done', next: null }
 ];
+
+// Componente Card Kanban
+const KanbanCard = ({ issue, column, moveIssue, deleteIssue }) => (
+    <div
+      key={issue.id}
+      className="bg-white border border-slate-200 rounded-lg p-4 shadow-md hover:shadow-xl transition-all duration-200 cursor-grab active:cursor-grabbing"
+    >
+      <div className="flex items-start justify-between mb-2">
+        <h3 className="font-semibold text-slate-800 flex-1 pr-2 text-base">
+          {issue.title}
+        </h3>
+        <span className={`px-2 py-1 rounded text-xs font-medium border uppercase whitespace-nowrap ${PRIORITIES[issue.priority].color}`}>
+          {PRIORITIES[issue.priority].label}
+        </span>
+      </div>
+
+      {issue.description && (
+        <p className="text-sm text-slate-600 mb-3 line-clamp-3">
+          {issue.description}
+        </p>
+      )}
+
+      {issue.assignee && (
+        <div className="text-xs font-medium text-slate-500 mb-3 p-1 rounded-md bg-slate-100 max-w-fit border border-slate-200">
+          <span className="font-bold text-slate-700">Assegnatario:</span> {issue.assignee}
+        </div>
+      )}
+
+      <div className="flex gap-2 mt-4">
+        {column.next && (
+          <button
+            onClick={() => moveIssue(issue.id, issue.status)}
+            className="flex-1 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors shadow-blue-500/50 shadow-md hover:shadow-lg transform active:scale-[0.99]"
+          >
+            Sposta
+            <ArrowRightIcon className="w-4 h-4" />
+          </button>
+        )}
+        <button
+          onClick={() => deleteIssue(issue.id)}
+          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors shadow-red-500/50 shadow-md hover:shadow-lg transform active:scale-[0.99]"
+          title="Elimina Issue"
+        >
+          <Trash2Icon className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
 
 // Componente principale
 function DevTaskManager() {
@@ -65,25 +114,21 @@ function DevTaskManager() {
         const newIssue = {
             id: Date.now().toString(),
             ...formData,
-            status: 'backlog',
+            status: 'backlog', // La nuova issue parte sempre da Backlog
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
 
         setIssues([...issues, newIssue]);
+        // Resetta il form e nascondi
         setFormData({ title: '', description: '', assignee: '', priority: 'medium' });
         setShowForm(false);
-    };
-
-    // Conta le issue totali per colonna
-    const getColumnCount = (columnId) => {
-        return issues.filter(issue => issue.status === columnId).length;
     };
 
     // Funzione per spostare una issue alla colonna successiva
     const moveIssue = (issueId, currentStatus) => {
         const column = COLUMNS.find(col => col.id === currentStatus);
-        if (!column || !column.next) return;
+        if (!column || !column.next) return; // Non ci sono passi successivi
 
         setIssues(issues.map(issue =>
             issue.id === issueId
@@ -94,11 +139,13 @@ function DevTaskManager() {
 
     // Funzione per eliminare una issue
     const deleteIssue = (issueId) => {
+        // Eliminazione diretta (evita l'uso di window.confirm)
         setIssues(issues.filter(issue => issue.id !== issueId));
     };
 
     // Filtra e ordina le issue per colonna e termine di ricerca
     const getColumnIssues = (columnId) => {
+        // Ordina le issue in base alla priorità (Critica > Alta > Media > Bassa)
         const priorityOrder = ['critical', 'high', 'medium', 'low'];
 
         const filtered = issues.filter(issue => {
@@ -110,17 +157,24 @@ function DevTaskManager() {
             return matchesStatus && matchesSearch;
         });
 
+        // Ordina: le più critiche in alto, poi per data di creazione come fallback
         return filtered.sort((a, b) => {
             const priorityA = priorityOrder.indexOf(a.priority);
             const priorityB = priorityOrder.indexOf(b.priority);
             if (priorityA !== priorityB) {
-                return priorityA - priorityB;
+                return priorityA - priorityB; // Indice inferiore = priorità maggiore
             }
+            // Fallback: ordina dalla meno recente alla più recente
             return new Date(a.createdAt) - new Date(b.createdAt); 
         });
     };
+
+    // Conta le issue totali (non filtrate dalla ricerca) per colonna
+    const getColumnCount = (columnId) => {
+        return issues.filter(issue => issue.status === columnId).length;
+    };
     
-     return (
+    return (
         <div className="p-4 md:p-8">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
@@ -286,6 +340,7 @@ function DevTaskManager() {
         </div>
     );
 }
+
 // Monta l'applicazione React
 // Assicurati che l'elemento 'root' esista in index.html
 const container = document.getElementById('root');
