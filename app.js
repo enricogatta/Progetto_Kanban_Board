@@ -287,8 +287,11 @@ function DevTaskManager() {
     );
 }
 // Monta l'applicazione React
+// Assicurati che l'elemento 'root' esista in index.html
 const container = document.getElementById('root');
 if (container) {
     const root = ReactDOM.createRoot(container);
     root.render(<DevTaskManager />);
+} else {
+    console.error("Errore: Impossibile trovare l'elemento 'root' per il rendering di React.");
 }
