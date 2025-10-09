@@ -143,6 +143,15 @@ function DevTaskManager() {
         setIssues(issues.filter(issue => issue.id !== issueId));
     };
 
+    // Funzioni per il Drag and Drop
+    const handleDragStart = (e, issue) => {
+        setDraggedIssue(issue);
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', e.target);
+        // Aggiunge un effetto visivo alla card trascinata
+        e.target.style.opacity = '0.5';
+    };
+
     // Filtra e ordina le issue per colonna e termine di ricerca
     const getColumnIssues = (columnId) => {
         // Ordina le issue in base alla priorità (Critica > Alta > Media > Bassa)
