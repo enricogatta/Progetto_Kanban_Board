@@ -161,6 +161,23 @@ function DevTaskManager() {
         e.dataTransfer.dropEffect = 'move';
     };
 
+    const handleDrop = (e, targetColumnId) => {
+        e.preventDefault();
+        
+        if (!draggedIssue || draggedIssue.status === targetColumnId) {
+            return;
+        }
+
+        // Sposta l'issue nella nuova colonna
+        setIssues(issues.map(issue =>
+            issue.id === draggedIssue.id
+                ? { ...issue, status: targetColumnId, updatedAt: new Date().toISOString() }
+                : issue
+        ));
+        
+        setDraggedIssue(null);
+    };
+
     // Filtra e ordina le issue per colonna e termine di ricerca
     const getColumnIssues = (columnId) => {
         // Ordina le issue in base alla priorità (Critica > Alta > Media > Bassa)
