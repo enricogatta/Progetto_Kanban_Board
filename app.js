@@ -79,6 +79,46 @@ function DevTaskManager() {
     const getColumnCount = (columnId) => {
         return issues.filter(issue => issue.status === columnId).length;
     };
+
+    // Funzione per spostare una issue alla colonna successiva
+    const moveIssue = (issueId, currentStatus) => {
+        const column = COLUMNS.find(col => col.id === currentStatus);
+        if (!column || !column.next) return;
+
+        setIssues(issues.map(issue =>
+            issue.id === issueId
+                ? { ...issue, status: column.next, updatedAt: new Date().toISOString() }
+                : issue
+        ));
+    };
+
+    // Funzione per eliminare una issue
+    const deleteIssue = (issueId) => {
+        setIssues(issues.filter(issue => issue.id !== issueId));
+    };
+
+    // Filtra e ordina le issue per colonna e termine di ricerca
+    const getColumnIssues = (columnId) => {
+        const priorityOrder = ['critical', 'high', 'medium', 'low'];
+
+        const filtered = issues.filter(issue => {
+            const matchesStatus = issue.status === columnId;
+            const matchesSearch = searchTerm === '' ||
+                issue.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                issue.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                issue.assignee.toLowerCase().includes(searchTerm.toLowerCase());
+            return matchesStatus && matchesSearch;
+        });
+
+        return filtered.sort((a, b) => {
+            const priorityA = priorityOrder.indexOf(a.priority);
+            const priorityB = priorityOrder.indexOf(b.priority);
+            if (priorityA !== priorityB) {
+                return priorityA - priorityB;
+            }
+            return new Date(a.createdAt) - new Date(b.createdAt); 
+        });
+    };
     
      return (
         <div className="p-4 md:p-8">
