@@ -79,6 +79,18 @@ function DevTaskManager() {
     const getColumnCount = (columnId) => {
         return issues.filter(issue => issue.status === columnId).length;
     };
+
+    // Funzione per spostare una issue alla colonna successiva
+    const moveIssue = (issueId, currentStatus) => {
+        const column = COLUMNS.find(col => col.id === currentStatus);
+        if (!column || !column.next) return;
+
+        setIssues(issues.map(issue =>
+            issue.id === issueId
+                ? { ...issue, status: column.next, updatedAt: new Date().toISOString() }
+                : issue
+        ));
+    };
     
      return (
         <div className="p-4 md:p-8">
