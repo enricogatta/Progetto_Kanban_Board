@@ -151,6 +151,15 @@ function DevTaskManager() {
         // Aggiunge un effetto visivo alla card trascinata
         e.target.style.opacity = '0.5';
     };
+    const handleDragEnd = (e) => {
+        e.target.style.opacity = '1';
+        setDraggedIssue(null);
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    };
 
     // Filtra e ordina le issue per colonna e termine di ricerca
     const getColumnIssues = (columnId) => {
