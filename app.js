@@ -91,6 +91,11 @@ function DevTaskManager() {
                 : issue
         ));
     };
+
+    // Funzione per eliminare una issue
+    const deleteIssue = (issueId) => {
+        setIssues(issues.filter(issue => issue.id !== issueId));
+    };
     
      return (
         <div className="p-4 md:p-8">
