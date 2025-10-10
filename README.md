@@ -88,7 +88,6 @@ Il codice è pensato per essere facilmente estendibile:
 ## 🤝 Contribuire
 
 Sentiti libero di forkare il progetto e proporre miglioramenti! Alcune idee:
-- Drag & drop tra colonne
 - Filtri per priorità
 - Export/Import dati
 - Dark mode
