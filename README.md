@@ -9,7 +9,6 @@ Un task manager Kanban moderno e intuitivo per gestire le tue attività di svilu
 - **🔍 Ricerca in tempo reale**: Trova rapidamente task per titolo, descrizione o assegnatario
 - **👥 Assegnazione task**: Assegna ogni task a un membro del team
 - **💾 Persistenza locale**: I tuoi dati vengono salvati automaticamente nel browser
-- **📱 Design responsive**: Funziona perfettamente su desktop e mobile
 - **🎭 UI moderna**: Interfaccia pulita con animazioni fluide e feedback visivo
 
 ## 🚀 Come iniziare
@@ -46,13 +45,6 @@ Un task manager Kanban moderno e intuitivo per gestire le tue attività di svilu
 
 ### Cercare task
 - Usa la barra di ricerca in alto per filtrare per titolo, descrizione o assegnatario
-
-## 🎨 Stack Tecnologico
-
-- **React 18** - Libreria UI
-- **Tailwind CSS** - Styling utility-first
-- **localStorage** - Persistenza dati lato client
-- **Vanilla JavaScript** - Nessun build tool necessario!
 
 ## 📦 Struttura del Progetto
 
