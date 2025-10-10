@@ -3,6 +3,7 @@ const PlusIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" w
 const SearchIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>;
 const Trash2Icon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>;
 const ArrowRightIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>;
+const ArrowLeftIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>;
 
 const { useState, useEffect } = React;
 
@@ -17,10 +18,10 @@ const PRIORITIES = {
 };
 
 const COLUMNS = [
-    { id: 'backlog', title: 'Backlog', next: 'inProgress' },
-    { id: 'inProgress', title: 'In Progress', next: 'review' },
-    { id: 'review', title: 'Review', next: 'done' },
-    { id: 'done', title: 'Done', next: null }
+    { id: 'backlog', title: 'Backlog', next: 'inProgress', prev: null },
+    { id: 'inProgress', title: 'In Progress', next: 'review', prev: 'backlog' },
+    { id: 'review', title: 'Review', next: 'done', prev: 'inProgress' },
+    { id: 'done', title: 'Done', next: null, prev: 'review' }
 ];
 
 // Componente Card Kanban
@@ -53,12 +54,21 @@ const KanbanCard = ({ issue, column, moveIssue, deleteIssue, onDragStart }) => (
       )}
 
       <div className="flex gap-2 mt-4">
+        {column.prev && (
+          <button
+            onClick={() => moveIssue(issue.id, column.prev)}
+            className="flex-1 flex items-center justify-center gap-1 bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors shadow-slate-500/50 shadow-md hover:shadow-lg transform active:scale-[0.99]"
+          >
+            <ArrowLeftIcon className="w-4 h-4" />
+            Indietro
+          </button>
+        )}
         {column.next && (
           <button
-            onClick={() => moveIssue(issue.id, issue.status)}
+            onClick={() => moveIssue(issue.id, column.next)}
             className="flex-1 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors shadow-blue-500/50 shadow-md hover:shadow-lg transform active:scale-[0.99]"
           >
-            Sposta
+            Avanti
             <ArrowRightIcon className="w-4 h-4" />
           </button>
         )}
@@ -128,14 +138,11 @@ function DevTaskManager() {
         setShowForm(false);
     };
 
-    // Funzione per spostare una issue alla colonna successiva
-    const moveIssue = (issueId, currentStatus) => {
-        const column = COLUMNS.find(col => col.id === currentStatus);
-        if (!column || !column.next) return; // Non ci sono passi successivi
-
+    // Funzione per spostare una issue verso una colonna specifica
+    const moveIssue = (issueId, targetStatus) => {
         setIssues(issues.map(issue =>
             issue.id === issueId
-                ? { ...issue, status: column.next, updatedAt: new Date().toISOString() }
+                ? { ...issue, status: targetStatus, updatedAt: new Date().toISOString() }
                 : issue
         ));
     };
